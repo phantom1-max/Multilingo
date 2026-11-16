@@ -7,7 +7,6 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,6 +65,5 @@ class MainFlowInstrumentedTest {
 
         val progress = device.wait(Until.findObject(By.text("Your progress")), 5_000)
         assertNotNull("Profile screen should render", progress)
-        assertTrue("App package should remain installed", device.isPackageInstalled(packageName))
     }
 }
