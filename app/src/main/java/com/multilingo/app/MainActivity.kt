@@ -90,14 +90,14 @@ class MainActivity : ComponentActivity() {
             var checked by rememberSaveable { mutableStateOf(false) }
             var dark by rememberSaveable { mutableStateOf(prefs.getBoolean("dark", false)) }
             var rewardedLessons by remember { mutableStateOf(emptySet<String>()) }
-            MaterialTheme(colorScheme = if (dark) darkColorScheme(primary = Blue) else lightColorScheme(primary = Blue, background = Canvas)) {
-                Surface(Modifier.fillMaxSize(), color = if (dark) Color(0xFF111827) else Canvas) {
+            MaterialTheme(colorScheme = if (dark) darkColorScheme(primary = Color(0xFF9AAEFF), background = Color(0xFF111827), surface = Color(0xFF1F2937), surfaceVariant = Color(0xFF263349), onSurface = Color(0xFFF3F4F6), onSurfaceVariant = Color(0xFFB8C1D1)) else lightColorScheme(primary = Blue, background = Canvas, surface = Color.White, surfaceVariant = Color(0xFFF0F2F8), onSurface = Ink, onSurfaceVariant = Muted)) {
+                Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     when (screen) {
                         "welcome" -> WelcomeScreen(
                             onContinue = { prefs.edit().putBoolean("welcome_done", true).apply(); screen = "home" },
                             onSignIn = { prefs.edit().putBoolean("welcome_done", true).apply(); screen = "home" }
                         )
-                        "home" -> HomeScreen(xp, streak, onStart = { lessonIndex = 0; screen = "lesson" }, onCourses = { screen = "courses" }, onProfile = { screen = "profile" })
+                        "home" -> HomeScreen(xp, streak, selectedCourse, onStart = { lessonIndex = 0; screen = "lesson" }, onCourses = { screen = "courses" }, onProfile = { screen = "profile" })
                         "courses" -> CoursesScreen(onBack = { screen = "home" }, onSelect = { selectedCourse = it; prefs.edit().putString("course", it).apply(); lessonIndex = 0; screen = "lesson" })
                         "lesson" -> {
                             val lessons = lessonsFor(selectedCourse)
@@ -122,8 +122,8 @@ fun WelcomeScreen(onContinue: () -> Unit, onSignIn: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             ByteMascot()
-            Text("multilingo", fontSize = 34.sp, fontWeight = FontWeight.Black, color = Ink)
-            Text("A little code every day.", color = Muted, fontSize = 16.sp)
+            Text("multilingo", fontSize = 34.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onSurface)
+            Text("A little code every day.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 16.sp)
             Spacer(Modifier.height(28.dp))
             Text("Learn by doing.", fontSize = 27.sp, fontWeight = FontWeight.Bold, color = Ink)
             Text("Tiny lessons. Real skills. Your next big idea.", textAlign = TextAlign.Center, color = Muted)
@@ -176,7 +176,7 @@ fun ByteMascot() {
 }
 
 @Composable
-fun HomeScreen(xp: Int, streak: Int, onStart: () -> Unit, onCourses: () -> Unit, onProfile: () -> Unit) {
+fun HomeScreen(xp: Int, streak: Int, selectedCourse: String, onStart: () -> Unit, onCourses: () -> Unit, onProfile: () -> Unit) {
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 18.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Column { Text("Hey, coder 👋", color = Muted); Text("Ready for a tiny win?", fontSize = 23.sp, fontWeight = FontWeight.Bold, color = Ink) }
@@ -191,7 +191,7 @@ fun HomeScreen(xp: Int, streak: Int, onStart: () -> Unit, onCourses: () -> Unit,
                     Text("YOUR LEARNING PATH", color = Lime, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.2.sp)
                     Spacer(Modifier.height(10.dp))
                     Text("Python fundamentals", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold)
-                    Text("Start with variables, output and logic.", color = Color(0xFFD6DCEC))
+                    Text("Pick up where you left off and keep building your skills.", color = Color(0xFFD6DCEC))
                     Spacer(Modifier.height(18.dp))
                     Button(onClick = onStart, colors = ButtonDefaults.buttonColors(containerColor = Lime, contentColor = Ink), modifier = Modifier.fillMaxWidth()) { Text("Continue lesson  →", fontWeight = FontWeight.Bold) }
                 }
@@ -199,7 +199,7 @@ fun HomeScreen(xp: Int, streak: Int, onStart: () -> Unit, onCourses: () -> Unit,
             Spacer(Modifier.height(22.dp))
             Text("Today's mission", color = Ink, fontWeight = FontWeight.Bold, fontSize = 19.sp)
             Spacer(Modifier.height(10.dp))
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(18.dp)).padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(18.dp)).padding(16.dp)) {
                 Text("🧩", fontSize = 28.sp); Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) { Text("Complete one lesson", color = Ink, fontWeight = FontWeight.SemiBold); Text("A small step counts.", color = Muted, fontSize = 12.sp) }
                 Text("0/1", color = Blue, fontWeight = FontWeight.Bold)
@@ -258,7 +258,7 @@ fun LessonScreen(course: String, lesson: Lesson, selected: Int, checked: Boolean
         Spacer(Modifier.height(10.dp))
         lesson.choices.forEachIndexed { index, choice ->
             val active = selected == index
-            Row(Modifier.fillMaxWidth().padding(vertical = 4.dp).background(if (active) Color(0xFFE7ECFF) else Color.White, RoundedCornerShape(14.dp)).clickable { onSelect(index) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.fillMaxWidth().padding(vertical = 4.dp).background(if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(14.dp)).clickable { onSelect(index) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text("${'A' + index}", color = Blue, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.width(14.dp)); Text(choice, color = Ink, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
@@ -277,7 +277,7 @@ fun LessonScreen(course: String, lesson: Lesson, selected: Int, checked: Boolean
 
 @Composable
 fun BottomBar(active: String, onHome: () -> Unit, onCourses: () -> Unit, onProfile: () -> Unit) {
-    NavigationBar(containerColor = Color.White) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
         NavigationBarItem(selected = active == "Home", onClick = onHome, icon = { Icon(Icons.Default.Home, contentDescription = "Home") }, label = { Text("Home") })
         NavigationBarItem(selected = false, onClick = onCourses, icon = { Icon(Icons.Default.Code, contentDescription = "Courses") }, label = { Text("Learn") })
         NavigationBarItem(selected = false, onClick = onProfile, icon = { Icon(Icons.Default.Person, contentDescription = "Profile") }, label = { Text("Profile") })
@@ -293,7 +293,7 @@ fun ProfileScreen(xp: Int, streak: Int, dark: Boolean, onDark: (Boolean) -> Unit
         Text("Your progress", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Ink)
         Text("$xp XP earned · $streak day streak", color = Muted)
         Spacer(Modifier.height(20.dp))
-        Row(Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(16.dp)).padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(16.dp)).padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Text("Dark theme", color = Ink, modifier = Modifier.weight(1f))
             Switch(checked = dark, onCheckedChange = onDark)
         }
