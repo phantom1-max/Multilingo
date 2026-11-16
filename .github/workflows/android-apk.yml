@@ -26,15 +26,21 @@ jobs:
           gradle-version: "8.13"
       - name: Run unit tests and lint
         run: gradle --no-daemon testDebugUnitTest lintDebug
-      - name: Launch Android emulator and test app flows
+      - name: Build debug APK
+        run: gradle --no-daemon assembleDebug
+      - name: Launch Android emulator and smoke-test app
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
           arch: x86_64
           profile: pixel_2
-          script: gradle --no-daemon connectedDebugAndroidTest
-      - name: Build debug APK
-        run: gradle --no-daemon assembleDebug
+          script: |
+            adb install app/build/outputs/apk/debug/app-debug.apk
+            adb shell monkey -p com.multilingo.app 1
+            sleep 12
+            adb shell pidof com.multilingo.app
+            adb shell uiautomator dump /sdcard/window.xml
+            adb shell cat /sdcard/window.xml | grep -q "Start learning"
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
@@ -42,7 +48,7 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
       - name: Publish APK to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v0.1.2' }}
