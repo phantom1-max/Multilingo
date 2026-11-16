@@ -30,3 +30,8 @@ This is an early prototype, not a complete Duolingo/Mimo replacement. Authentica
 ## Inspiration
 
 The product borrows broad learning patterns—short exercises, progress feedback, streak-style motivation and project-based coding practice—while using original branding, UI and character art.
+
+
+## First APK release
+
+The `v0.1.0` GitHub Release is generated automatically by the Android workflow on pushes to `main`. It includes the debug APK for testing.
