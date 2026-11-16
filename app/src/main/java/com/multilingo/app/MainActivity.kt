@@ -82,13 +82,14 @@ class MainActivity : ComponentActivity() {
         val prefs = getSharedPreferences("multilingo", MODE_PRIVATE)
         setContent {
             var screen by rememberSaveable { mutableStateOf(if (prefs.getBoolean("welcome_done", false)) "home" else "welcome") }
-            var selectedCourse by rememberSaveable { mutableStateOf("Python") }
+            var selectedCourse by rememberSaveable { mutableStateOf(prefs.getString("course", "Python") ?: "Python") }
             var lessonIndex by rememberSaveable { mutableIntStateOf(0) }
             var xp by rememberSaveable { mutableIntStateOf(prefs.getInt("xp", 0)) }
             var streak by rememberSaveable { mutableIntStateOf(prefs.getInt("streak", 1)) }
             var selectedAnswer by rememberSaveable { mutableIntStateOf(-1) }
             var checked by rememberSaveable { mutableStateOf(false) }
-            var dark by rememberSaveable { mutableStateOf(false) }
+            var dark by rememberSaveable { mutableStateOf(prefs.getBoolean("dark", false)) }
+            var rewardedLessons by remember { mutableStateOf(emptySet<String>()) }
             MaterialTheme(colorScheme = if (dark) darkColorScheme(primary = Blue) else lightColorScheme(primary = Blue, background = Canvas)) {
                 Surface(Modifier.fillMaxSize(), color = if (dark) Color(0xFF111827) else Canvas) {
                     when (screen) {
@@ -96,18 +97,18 @@ class MainActivity : ComponentActivity() {
                             onContinue = { prefs.edit().putBoolean("welcome_done", true).apply(); screen = "home" },
                             onSignIn = { prefs.edit().putBoolean("welcome_done", true).apply(); screen = "home" }
                         )
-                        "home" -> HomeScreen(xp, streak, onStart = { selectedCourse = "Python"; lessonIndex = 0; screen = "lesson" }, onCourses = { screen = "courses" }, onProfile = { screen = "profile" })
-                        "courses" -> CoursesScreen(onBack = { screen = "home" }, onSelect = { selectedCourse = it; lessonIndex = 0; screen = "lesson" })
+                        "home" -> HomeScreen(xp, streak, onStart = { lessonIndex = 0; screen = "lesson" }, onCourses = { screen = "courses" }, onProfile = { screen = "profile" })
+                        "courses" -> CoursesScreen(onBack = { screen = "home" }, onSelect = { selectedCourse = it; prefs.edit().putString("course", it).apply(); lessonIndex = 0; screen = "lesson" })
                         "lesson" -> {
                             val lessons = lessonsFor(selectedCourse)
                             val lesson = lessons[lessonIndex % lessons.size]
                             LessonScreen(selectedCourse, lesson, selectedAnswer, checked,
                                 onSelect = { selectedAnswer = it; checked = false },
-                                onCheck = { checked = true; if (selectedAnswer == lesson.answer) { xp += 10; prefs.edit().putInt("xp", xp).apply() } },
+                                onCheck = { checked = true; val rewardKey = "$selectedCourse-$lessonIndex"; if (selectedAnswer == lesson.answer && rewardKey !in rewardedLessons) { rewardedLessons = rewardedLessons + rewardKey; xp += 10; prefs.edit().putInt("xp", xp).apply() } },
                                 onContinue = { lessonIndex++; selectedAnswer = -1; checked = false; if (lessonIndex % lessons.size == 0) screen = "home" },
                                 onExit = { screen = "home" })
                         }
-                        else -> ProfileScreen(xp, streak, dark, onDark = { dark = it }, onBack = { screen = "home" })
+                        else -> ProfileScreen(xp, streak, dark, onDark = { dark = it; prefs.edit().putBoolean("dark", it).apply() }, onBack = { screen = "home" })
                     }
                 }
             }
@@ -139,14 +140,38 @@ fun WelcomeScreen(onContinue: () -> Unit, onSignIn: () -> Unit) {
 
 @Composable
 fun ByteMascot() {
-    Box(Modifier.size(150.dp).background(Lime, RoundedCornerShape(36.dp)), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("  ▄▄▄▄▄  ", fontSize = 25.sp, color = Ink, lineHeight = 20.sp)
-            Text("█ ▪   ▪ █", fontSize = 22.sp, color = Ink, lineHeight = 20.sp)
-            Text(" ▀▄ ▄▀ ", fontSize = 22.sp, color = Ink, lineHeight = 20.sp)
-            Text("  ▀▀▀  ", fontSize = 22.sp, color = Ink, lineHeight = 20.sp)
-            Text("BYTE", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Ink)
+    Box(
+        Modifier.size(172.dp).background(Color(0xFF111A48), RoundedCornerShape(34.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Box(
+                Modifier.size(width = 116.dp, height = 94.dp)
+                    .background(Color(0xFF762BEA), RoundedCornerShape(34.dp))
+                    .padding(9.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    Modifier.fillMaxSize().background(Color(0xFF080D25), RoundedCornerShape(25.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("⌒   ⌒", color = Color(0xFF22E6FF), fontSize = 25.sp, fontWeight = FontWeight.Black, lineHeight = 26.sp)
+                        Text("  ﹀  ", color = Color(0xFF22E6FF), fontSize = 24.sp, fontWeight = FontWeight.Black, lineHeight = 22.sp)
+                    }
+                }
+            }
+            Spacer(Modifier.height(5.dp))
+            Box(
+                Modifier.width(104.dp).height(43.dp).background(Color(0xFF762BEA), RoundedCornerShape(15.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("M", color = Color.White, fontSize = 29.sp, fontWeight = FontWeight.Black)
+            }
+            Text("BYTE", color = Color(0xFF22E6FF), fontSize = 10.sp, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
         }
+        Text("✦", color = Color(0xFFFFD45E), fontSize = 22.sp, modifier = Modifier.align(Alignment.TopEnd).padding(13.dp))
+        Text("✦", color = Color(0xFF22E6FF), fontSize = 15.sp, modifier = Modifier.align(Alignment.BottomStart).padding(15.dp))
     }
 }
 
