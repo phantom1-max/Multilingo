@@ -47,6 +47,35 @@ private val pythonLessons = listOf(
     Lesson("Make a decision", "Which keyword starts a conditional statement?", "___ score > 5:", listOf("when", "if", "check", "for"), 1, "if runs a block of code only when its condition is true.")
 )
 
+private fun lessonsFor(course: String): List<Lesson> = when (course) {
+    "Java" -> listOf(
+        Lesson("Print a message", "Which Java statement prints text?", "___ .out.println(\"Hello\");", listOf("System", "Console", "print", "echo"), 0, "System.out.println() writes a line to the console."),
+        Lesson("Declare a variable", "Which type stores whole numbers?", "___ age = 14;", listOf("String", "int", "boolean", "double"), 1, "int stores whole-number values."),
+        Lesson("Start a condition", "Which keyword begins a conditional?", "___ (age >= 13) {", listOf("when", "if", "for", "case"), 1, "if checks whether a condition is true.")
+    )
+    "JavaScript" -> listOf(
+        Lesson("Log a message", "Which method writes a message to the console?", "console.___(\"Hello\");", listOf("print", "log", "write", "echo"), 1, "console.log() is commonly used to display debugging output."),
+        Lesson("Declare a value", "Which keyword declares a block-scoped variable?", "___ score = 10;", listOf("let", "echo", "dim", "varies"), 0, "let declares a block-scoped variable that can be reassigned."),
+        Lesson("Compare values", "Which operator checks strict equality?", "5 ___ \"5\"", listOf("=", "===", "=>", "!="), 1, "=== compares values without converting their types.")
+    )
+    "HTML & CSS" -> listOf(
+        Lesson("Create a heading", "Which HTML tag creates the main heading?", "<___>Hello</h1>", listOf("p", "h1", "head", "title"), 1, "h1 represents the top-level heading in a page."),
+        Lesson("Add a paragraph", "Which tag marks a paragraph?", "<___>Hello</p>", listOf("div", "span", "p", "br"), 2, "The p element represents a paragraph."),
+        Lesson("Change text colour", "Which CSS property changes text colour?", "___: blue;", listOf("font", "color", "background", "text"), 1, "The color property sets the foreground colour of text.")
+    )
+    "SQL" -> listOf(
+        Lesson("Read table data", "Which SQL keyword retrieves rows?", "___ * FROM students;", listOf("GET", "SELECT", "READ", "OPEN"), 1, "SELECT retrieves data from one or more tables."),
+        Lesson("Filter rows", "Which keyword adds a condition?", "SELECT * FROM users ___ age > 12;", listOf("WHERE", "ORDER", "GROUP", "LIMIT BY"), 0, "WHERE filters rows using a condition."),
+        Lesson("Sort results", "Which clause sorts query results?", "SELECT name FROM users ___ name;", listOf("SORT", "ORDER BY", "ARRANGE", "FILTER"), 1, "ORDER BY sorts rows by one or more columns.")
+    )
+    "C++" -> listOf(
+        Lesson("Print text", "Which stream prints to the console?", "std::___ << \"Hello\";", listOf("cin", "cout", "input", "print"), 1, "std::cout is the standard output stream."),
+        Lesson("Declare an integer", "Which type stores whole numbers?", "___ score = 10;", listOf("string", "int", "bool", "char[]"), 1, "int stores whole-number values."),
+        Lesson("Include a library", "Which directive includes a header?", "___ <iostream>", listOf("import", "#include", "using", "package"), 1, "#include makes declarations from a header available.")
+    )
+    else -> pythonLessons
+}
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,11 +99,12 @@ class MainActivity : ComponentActivity() {
                         "home" -> HomeScreen(xp, streak, onStart = { selectedCourse = "Python"; lessonIndex = 0; screen = "lesson" }, onCourses = { screen = "courses" }, onProfile = { screen = "profile" })
                         "courses" -> CoursesScreen(onBack = { screen = "home" }, onSelect = { selectedCourse = it; lessonIndex = 0; screen = "lesson" })
                         "lesson" -> {
-                            val lesson = pythonLessons[lessonIndex % pythonLessons.size]
+                            val lessons = lessonsFor(selectedCourse)
+                            val lesson = lessons[lessonIndex % lessons.size]
                             LessonScreen(selectedCourse, lesson, selectedAnswer, checked,
                                 onSelect = { selectedAnswer = it; checked = false },
                                 onCheck = { checked = true; if (selectedAnswer == lesson.answer) { xp += 10; prefs.edit().putInt("xp", xp).apply() } },
-                                onContinue = { lessonIndex++; selectedAnswer = -1; checked = false; if (lessonIndex % pythonLessons.size == 0) screen = "home" },
+                                onContinue = { lessonIndex++; selectedAnswer = -1; checked = false; if (lessonIndex % lessons.size == 0) screen = "home" },
                                 onExit = { screen = "home" })
                         }
                         else -> ProfileScreen(xp, streak, dark, onDark = { dark = it }, onBack = { screen = "home" })
