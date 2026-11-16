@@ -125,15 +125,15 @@ fun WelcomeScreen(onContinue: () -> Unit, onSignIn: () -> Unit) {
             Text("multilingo", fontSize = 34.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onSurface)
             Text("A little code every day.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 16.sp)
             Spacer(Modifier.height(28.dp))
-            Text("Learn by doing.", fontSize = 27.sp, fontWeight = FontWeight.Bold, color = Ink)
-            Text("Tiny lessons. Real skills. Your next big idea.", textAlign = TextAlign.Center, color = Muted)
+            Text("Learn by doing.", fontSize = 27.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text("Tiny lessons. Real skills. Your next big idea.", textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Button(onClick = onContinue, modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(16.dp)) { Text("Start learning") }
             OutlinedButton(onClick = onSignIn, modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(16.dp)) { Text("Continue with Google") }
             OutlinedButton(onClick = onSignIn, modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(16.dp)) { Text("Continue with email") }
             TextButton(onClick = onSignIn, modifier = Modifier.fillMaxWidth()) { Text("Continue with GitHub") }
-            Text("Sign-in buttons are UI placeholders in this first build.", fontSize = 11.sp, color = Muted, textAlign = TextAlign.Center)
+            Text("Sign-in buttons are UI placeholders in this first build.", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         }
     }
 }
@@ -179,8 +179,8 @@ fun ByteMascot() {
 fun HomeScreen(xp: Int, streak: Int, selectedCourse: String, onStart: () -> Unit, onCourses: () -> Unit, onProfile: () -> Unit) {
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 18.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Column { Text("Hey, coder 👋", color = Muted); Text("Ready for a tiny win?", fontSize = 23.sp, fontWeight = FontWeight.Bold, color = Ink) }
-            Text("🔥 $streak", color = Ink, fontWeight = FontWeight.Bold)
+            Column { Text("Hey, coder 👋", color = MaterialTheme.colorScheme.onSurfaceVariant); Text("Ready for a tiny win?", fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface) }
+            Text("🔥 $streak", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
         }
         Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             StatPill("⚡", "$xp XP"); StatPill("🎯", "Daily goal"); StatPill("💎", "0 gems")
@@ -190,22 +190,22 @@ fun HomeScreen(xp: Int, streak: Int, selectedCourse: String, onStart: () -> Unit
                 Column(Modifier.fillMaxWidth().padding(22.dp)) {
                     Text("YOUR LEARNING PATH", color = Lime, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.2.sp)
                     Spacer(Modifier.height(10.dp))
-                    Text("Python fundamentals", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold)
+                    Text("$selectedCourse fundamentals", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold)
                     Text("Pick up where you left off and keep building your skills.", color = Color(0xFFD6DCEC))
                     Spacer(Modifier.height(18.dp))
                     Button(onClick = onStart, colors = ButtonDefaults.buttonColors(containerColor = Lime, contentColor = Ink), modifier = Modifier.fillMaxWidth()) { Text("Continue lesson  →", fontWeight = FontWeight.Bold) }
                 }
             }
             Spacer(Modifier.height(22.dp))
-            Text("Today's mission", color = Ink, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+            Text("Today's mission", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 19.sp)
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(18.dp)).padding(16.dp)) {
                 Text("🧩", fontSize = 28.sp); Spacer(Modifier.width(12.dp))
-                Column(Modifier.weight(1f)) { Text("Complete one lesson", color = Ink, fontWeight = FontWeight.SemiBold); Text("A small step counts.", color = Muted, fontSize = 12.sp) }
+                Column(Modifier.weight(1f)) { Text("Complete one lesson", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold); Text("A small step counts.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
                 Text("0/1", color = Blue, fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(22.dp))
-            Text("Explore languages", color = Ink, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+            Text("Explore languages", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 19.sp)
             Spacer(Modifier.height(10.dp))
             courses.take(3).forEach { CourseRow(it, onCourses) }
         }
@@ -215,15 +215,15 @@ fun HomeScreen(xp: Int, streak: Int, selectedCourse: String, onStart: () -> Unit
 
 @Composable
 fun StatPill(icon: String, label: String) {
-    Row(Modifier.background(Color.White, CircleShape).padding(horizontal = 13.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) { Text(icon); Spacer(Modifier.width(5.dp)); Text(label, color = Ink, fontWeight = FontWeight.SemiBold, fontSize = 12.sp) }
+    Row(Modifier.background(MaterialTheme.colorScheme.surfaceVariant, CircleShape).padding(horizontal = 13.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) { Text(icon); Spacer(Modifier.width(5.dp)); Text(label, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold, fontSize = 12.sp) }
 }
 
 @Composable
 fun CourseRow(course: Course, onClick: () -> Unit) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp).background(Color.White, RoundedCornerShape(17.dp)).clickable { onClick() }.padding(13.dp), verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.size(44.dp).background(course.tint, RoundedCornerShape(13.dp)), contentAlignment = Alignment.Center) { Text(course.symbol, color = Ink, fontWeight = FontWeight.Black) }
+    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp).background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(17.dp)).clickable { onClick() }.padding(13.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(44.dp).background(course.tint, RoundedCornerShape(13.dp)), contentAlignment = Alignment.Center) { Text(course.symbol, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Black) }
         Spacer(Modifier.width(12.dp))
-        Column(Modifier.weight(1f)) { Text(course.name, color = Ink, fontWeight = FontWeight.Bold); Text(course.level, color = Muted, fontSize = 12.sp) }
+        Column(Modifier.weight(1f)) { Text(course.name, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold); Text(course.level, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
         Icon(Icons.Default.ChevronRight, contentDescription = "Open course", tint = Muted)
     }
 }
@@ -231,8 +231,8 @@ fun CourseRow(course: Course, onClick: () -> Unit) {
 @Composable
 fun CoursesScreen(onBack: () -> Unit, onSelect: (String) -> Unit) {
     Column(Modifier.fillMaxSize().padding(20.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }; Text("Choose a language", fontSize = 23.sp, fontWeight = FontWeight.Bold, color = Ink) }
-        Text("Pick a path. You can learn more than one.", color = Muted)
+        Row(verticalAlignment = Alignment.CenterVertically) { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }; Text("Choose a language", fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface) }
+        Text("Pick a path. You can learn more than one.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(14.dp))
         LazyColumn { items(courses) { course -> CourseRow(course) { onSelect(course.name) } } }
     }
@@ -244,23 +244,23 @@ fun LessonScreen(course: String, lesson: Lesson, selected: Int, checked: Boolean
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onExit) { Icon(Icons.Default.Close, contentDescription = "Exit lesson") }
             LinearProgressIndicator(progress = { 0.45f }, modifier = Modifier.weight(1f).height(8.dp), color = Blue, trackColor = Color(0xFFE2E6EF))
-            Text("  3/8", color = Muted, fontSize = 12.sp)
+            Text("  3/8", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
         Spacer(Modifier.height(24.dp))
         Text(course.uppercase() + " · QUICK LESSON", color = Blue, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.2.sp)
-        Text(lesson.title, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Ink)
+        Text(lesson.title, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Spacer(Modifier.height(12.dp))
-        Text(lesson.prompt, fontSize = 17.sp, color = Ink)
+        Text(lesson.prompt, fontSize = 17.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(Modifier.height(20.dp))
         Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF202D4D)), shape = RoundedCornerShape(18.dp)) { Text(lesson.code, modifier = Modifier.fillMaxWidth().padding(22.dp), color = Lime, fontSize = 20.sp, fontWeight = FontWeight.Bold) }
         Spacer(Modifier.height(18.dp))
-        Text("CHOOSE YOUR ANSWER", color = Muted, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+        Text("CHOOSE YOUR ANSWER", color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold, fontSize = 11.sp)
         Spacer(Modifier.height(10.dp))
         lesson.choices.forEachIndexed { index, choice ->
             val active = selected == index
             Row(Modifier.fillMaxWidth().padding(vertical = 4.dp).background(if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(14.dp)).clickable { onSelect(index) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text("${'A' + index}", color = Blue, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.width(14.dp)); Text(choice, color = Ink, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.width(14.dp)); Text(choice, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
                 if (active) Icon(Icons.Default.CheckCircle, contentDescription = "Selected", tint = Blue)
             }
@@ -268,7 +268,7 @@ fun LessonScreen(course: String, lesson: Lesson, selected: Int, checked: Boolean
         if (checked) {
             Spacer(Modifier.height(12.dp))
             Text(if (selected == lesson.answer) "Correct! +10 XP 🎉" else "Not quite — try again.", color = if (selected == lesson.answer) Color(0xFF26845B) else Color(0xFFB65C43), fontWeight = FontWeight.Bold)
-            Text(lesson.explanation, color = Muted, fontSize = 13.sp)
+            Text(lesson.explanation, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
         }
         Spacer(Modifier.weight(1f))
         Button(onClick = if (checked && selected == lesson.answer) onContinue else onCheck, enabled = selected >= 0, modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(16.dp)) { Text(if (checked && selected == lesson.answer) "Continue" else "Check answer") }
@@ -290,14 +290,14 @@ fun ProfileScreen(xp: Int, streak: Int, dark: Boolean, onDark: (Boolean) -> Unit
         IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }
         ByteMascot()
         Spacer(Modifier.height(12.dp))
-        Text("Your progress", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Ink)
-        Text("$xp XP earned · $streak day streak", color = Muted)
+        Text("Your progress", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+        Text("$xp XP earned · $streak day streak", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(20.dp))
         Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(16.dp)).padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("Dark theme", color = Ink, modifier = Modifier.weight(1f))
+            Text("Dark theme", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
             Switch(checked = dark, onCheckedChange = onDark)
         }
         Spacer(Modifier.height(12.dp))
-        Text("Account providers (connect in a later release): Google · Email · GitHub", color = Muted, fontSize = 13.sp)
+        Text("Account providers (connect in a later release): Google · Email · GitHub", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
     }
 }
