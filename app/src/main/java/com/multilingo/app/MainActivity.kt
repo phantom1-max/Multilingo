@@ -47,7 +47,7 @@ private val pythonLessons = listOf(
     Lesson("Make a decision", "Which keyword starts a conditional statement?", "___ score > 5:", listOf("when", "if", "check", "for"), 1, "if runs a block of code only when its condition is true.")
 )
 
-private fun lessonsFor(course: String): List<Lesson> = when (course) {
+internal fun lessonsFor(course: String): List<Lesson> = when (course) {
     "Java" -> listOf(
         Lesson("Print a message", "Which Java statement prints text?", "___ .out.println(\"Hello\");", listOf("System", "Console", "print", "echo"), 0, "System.out.println() writes a line to the console."),
         Lesson("Declare a variable", "Which type stores whole numbers?", "___ age = 14;", listOf("String", "int", "boolean", "double"), 1, "int stores whole-number values."),
